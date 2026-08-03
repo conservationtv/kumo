@@ -61,7 +61,7 @@ jobs:
       - name: Check deployment configuration
         id: deployment
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_API_TOKEN" ]; then
@@ -76,7 +76,7 @@ jobs:
         if: steps.deployment.outputs.enabled == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         working-directory: packages/kumo-docs-astro
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           output=$(vp exec wrangler versions upload \
@@ -129,7 +129,7 @@ jobs:
         if: steps.deployment.outputs.enabled == 'true' && github.event_name != 'pull_request'
         working-directory: packages/kumo-docs-astro
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           args=(deploy --name "$WORKER_NAME")

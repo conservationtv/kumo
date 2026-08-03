@@ -29,7 +29,7 @@ Create these repository settings under **Settings → Secrets and variables → 
 | Type     | Name                     | Value                                                                              |
 | -------- | ------------------------ | ---------------------------------------------------------------------------------- |
 | Secret   | `CLOUDFLARE_API_TOKEN`   | Cloudflare API token with Workers Scripts edit and Workers Routes edit permissions |
-| Variable | `CLOUDFLARE_ACCOUNT_ID`  | Cloudflare account ID                                                              |
+| Secret   | `CLOUDFLARE_ACCOUNT_ID`  | Cloudflare account ID                                                              |
 | Variable | `CLOUDFLARE_WORKER_NAME` | Worker name, for example `kumo-docs`                                               |
 | Variable | `DOCS_DOMAIN`            | Optional bare production hostname override; defaults to `ui.docs.conservation.tv`  |
 
