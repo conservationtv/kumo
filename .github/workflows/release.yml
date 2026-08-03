@@ -36,10 +36,53 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create version PR or publish package
+        id: changesets
         uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1
         with:
+          title: Release @conservationtv/kumo
+          commit: "chore: version packages for release"
           version: vp run version
           publish: vp run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Customize release pull request
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        uses: actions/github-script@v7
+        env:
+          RELEASE_PR_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
+        with:
+          script: |
+            const pullNumber = Number(process.env.RELEASE_PR_NUMBER);
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+            });
+            const releaseHeading = "# Releases";
+            const releaseStart = pullRequest.body?.indexOf(releaseHeading) ?? -1;
+
+            if (releaseStart === -1) {
+              core.setFailed(`Release notes not found in PR #${pullNumber}`);
+              return;
+            }
+
+            const releaseNotes = pullRequest.body
+              .slice(releaseStart)
+              .replaceAll("@cloudflare/kumo@", "@conservationtv/kumo@");
+            const body = [
+              "This PR is managed by Changesets for `conservationtv/kumo`.",
+              "",
+              "Merge it when ready to publish `@conservationtv/kumo` to GitHub Packages. Private docs and Figma workspace packages may be versioned here, but they are not published. New changesets on `main` update this PR automatically.",
+              "",
+              releaseNotes,
+            ].join("\n");
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+              title: "Release @conservationtv/kumo",
+              body,
+            });

@@ -51,5 +51,8 @@ jobs:
       - name: Test package
         run: vp run --filter @cloudflare/kumo test
 
+      - name: Build docs
+        run: vp run build:docs
+
       - name: Test docs
         run: vp run --filter @cloudflare/kumo-docs-astro test

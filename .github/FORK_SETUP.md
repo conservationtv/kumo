@@ -10,6 +10,8 @@ The fork uses three primary workflows:
 
 The release workflow uses the repository `GITHUB_TOKEN`; an npm token is not required. It stages the package under the repository owner scope, so this repository publishes `@conservationtv/kumo` while the source workspace keeps its upstream-compatible `@cloudflare/kumo` name.
 
+Changesets maintains a `Release @conservationtv/kumo` pull request. Merging that pull request publishes the library to GitHub Packages. Private docs and Figma workspace packages may appear in its version notes, but they are not published.
+
 The repository can keep the default **Read repository contents and packages permissions** setting. Each workflow declares its required permissions explicitly.
 
 The Changesets workflow does require **Allow GitHub Actions to create and approve pull requests** under **Settings → Actions → General**. If that setting is inherited or disabled, an organization owner must enable it under **Organization Settings → Actions → General**. An enterprise policy may also lock the organization setting.

@@ -4,11 +4,11 @@ This repo uses [Changesets](https://github.com/changesets/changesets) to manage 
 
 ## When is a changeset required?
 
-| Package                     | Changeset Required?                        | Why                                                   |
-| --------------------------- | ------------------------------------------ | ----------------------------------------------------- |
-| `packages/kumo/`            | **Yes** (enforced by pre-push)             | Published to npm as `@cloudflare/kumo`                |
-| `packages/kumo-docs-astro/` | Optional (version used for `/api/version`) | Not published, but version exposed in docs site build |
-| `packages/kumo-figma/`      | No                                         | Figma plugin, not published to npm                    |
+| Package                     | Changeset Required?                        | Why                                                    |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| `packages/kumo/`            | **Yes** (enforced by pre-push)             | Published to GitHub Packages as `@conservationtv/kumo` |
+| `packages/kumo-docs-astro/` | Optional (version used for `/api/version`) | Not published, but version exposed in docs site build  |
+| `packages/kumo-figma/`      | No                                         | Figma plugin, not published to npm                     |
 
 The pre-push hook (`lefthook.yml`) **only enforces** changesets for `packages/kumo/` changes.
 
