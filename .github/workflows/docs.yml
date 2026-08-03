@@ -134,7 +134,7 @@ jobs:
         run: |
           args=(deploy --name "$WORKER_NAME")
           if [ -n "$DOCS_DOMAIN" ]; then
-            args+=(--route "${DOCS_DOMAIN}/*")
+            args+=(--domain "$DOCS_DOMAIN")
           fi
 
           vp exec wrangler "${args[@]}"

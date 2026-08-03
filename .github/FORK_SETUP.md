@@ -33,7 +33,7 @@ Create these repository settings under **Settings → Secrets and variables → 
 | Variable | `CLOUDFLARE_WORKER_NAME` | Worker name, for example `kumo-docs`                                               |
 | Variable | `DOCS_DOMAIN`            | Optional bare production hostname override; defaults to `ui.docs.conservation.tv`  |
 
-The `conservation.tv` zone must belong to the configured Cloudflare account. The production workflow passes `ui.docs.conservation.tv/*` to Wrangler as the Worker route unless `DOCS_DOMAIN` overrides it.
+The `conservation.tv` zone must belong to the configured Cloudflare account. The production workflow configures `ui.docs.conservation.tv` as the Worker's Custom Domain unless `DOCS_DOMAIN` overrides it. Cloudflare creates the DNS record and certificate automatically.
 
 Enable preview URLs for the Worker in **Workers & Pages → your Worker → Settings → Domains & Routes**. Pull requests from branches in this repository then receive a version-specific `workers.dev` preview URL. Fork pull requests are built and tested but are not deployed because GitHub does not expose deployment secrets to them.
 
