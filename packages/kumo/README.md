@@ -1,11 +1,12 @@
-# @cloudflare/kumo
+# @conservationtv/kumo
 
 Cloudflare's component library for building modern web applications.
 
 ## Installation
 
 ```bash
-pnpm add @cloudflare/kumo
+echo "@conservationtv:registry=https://npm.pkg.github.com" >> .npmrc
+pnpm add @conservationtv/kumo
 ```
 
 ### Peer Dependencies
@@ -21,9 +22,9 @@ pnpm add react react-dom @phosphor-icons/react
 Kumo includes a built-in CLI for quick component reference:
 
 ```bash
-npx @cloudflare/kumo ls         # List all components
-npx @cloudflare/kumo doc Button # Get component documentation
-npx @cloudflare/kumo docs       # Get all component docs
+npx @conservationtv/kumo ls         # List all components
+npx @conservationtv/kumo doc Button # Get component documentation
+npx @conservationtv/kumo docs       # Get all component docs
 ```
 
 The CLI reads from `ai/component-registry.json` (generated from TypeScript types + demo examples).
@@ -34,10 +35,10 @@ The CLI reads from `ai/component-registry.json` (generated from TypeScript types
 
 ```tsx
 // Main package import
-import { Button, Input, Surface } from "@cloudflare/kumo";
+import { Button, Input, Surface } from "@conservationtv/kumo";
 
 // Granular imports (recommended for tree-shaking)
-import { Button } from "@cloudflare/kumo/components/button";
+import { Button } from "@conservationtv/kumo/components/button";
 ```
 
 ### Import Styles
@@ -49,23 +50,23 @@ import { Button } from "@cloudflare/kumo/components/button";
 In your main CSS file (e.g. `app.css`):
 
 ```css
-@source "../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
-@import "@cloudflare/kumo/styles/tailwind";
+@source "../node_modules/@conservationtv/kumo/dist/**/*.{js,jsx,ts,tsx}";
+@import "@conservationtv/kumo/styles/tailwind";
 @import "tailwindcss";
 ```
 
-> **Import order matters** — `@cloudflare/kumo/styles` must come **before** `@import "tailwindcss"` so Kumo's `@theme` tokens are registered first.
+> **Import order matters** — `@conservationtv/kumo/styles` must come **before** `@import "tailwindcss"` so Kumo's `@theme` tokens are registered first.
 
-> **Note:** The `@source` path is relative to your CSS file. Adjust it based on your project structure — e.g. if your CSS is in `src/styles/`, you may need `../../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}`.
+> **Note:** The `@source` path is relative to your CSS file. Adjust it based on your project structure — e.g. if your CSS is in `src/styles/`, you may need `../../node_modules/@conservationtv/kumo/dist/**/*.{js,jsx,ts,tsx}`.
 
-Alternatively, you can use the default style export (`@cloudflare/kumo/styles`) which is equivalent to `styles/tailwind`.
+Alternatively, you can use the default style export (`@conservationtv/kumo/styles`) which is equivalent to `styles/tailwind`.
 
 If you are **not** using Tailwind CSS, use the standalone build instead (see below) — no `@source` directive is needed.
 
 #### For Non-Tailwind Users (Standalone)
 
 ```js
-import "@cloudflare/kumo/styles/standalone";
+import "@conservationtv/kumo/styles/standalone";
 ```
 
 This imports a fully compiled CSS file with all Tailwind utilities and Kumo styles pre-compiled. No Tailwind configuration needed!
@@ -86,17 +87,17 @@ Kumo bundles [Base UI](https://base-ui.com) and re-exports all primitives for ad
 
 ```tsx
 // Barrel import - imports all primitives (convenient but larger bundle)
-import { Popover, Slider, Accordion } from "@cloudflare/kumo/primitives";
+import { Popover, Slider, Accordion } from "@conservationtv/kumo/primitives";
 
 // Granular imports - tree-shakeable, smaller bundles (recommended)
-import { Popover } from "@cloudflare/kumo/primitives/popover";
-import { Slider } from "@cloudflare/kumo/primitives/slider";
-import { Accordion } from "@cloudflare/kumo/primitives/accordion";
+import { Popover } from "@conservationtv/kumo/primitives/popover";
+import { Slider } from "@conservationtv/kumo/primitives/slider";
+import { Accordion } from "@conservationtv/kumo/primitives/accordion";
 ```
 
 > **Note:** Prefer styled Kumo components when available. Primitives are for custom components not yet in Kumo or cases requiring fine-grained control.
 >
-> **Performance tip:** Use granular imports (`@cloudflare/kumo/primitives/{name}`) for better tree-shaking and smaller bundle sizes.
+> **Performance tip:** Use granular imports (`@conservationtv/kumo/primitives/{name}`) for better tree-shaking and smaller bundle sizes.
 
 #### Updating Primitives
 
@@ -282,7 +283,13 @@ pnpm test:coverage
 
 **Zero maintenance:** Tests automatically discover components and blocks from the filesystem and validate against package.json. When adding new items, tests will fail with exact code snippets to fix configuration.
 
-## Beta Releases
+## Releases
+
+Releases are managed by Changesets and `.github/workflows/release.yml`. Merging a feature changeset into `main` creates or updates a **Version Packages** pull request. Merging that pull request publishes `@conservationtv/kumo` to GitHub Packages.
+
+The workflow uses the repository `GITHUB_TOKEN`; no npm token is required. See `.github/FORK_SETUP.md` at the repository root for repository and consumer configuration.
+
+<!-- Legacy upstream npm release documentation retained temporarily for migration reference.
 
 Beta releases allow you to test changes before publishing to production. Beta versions are automatically created for pull requests and include the commit hash for identification.
 
@@ -456,6 +463,8 @@ Changesets automatically generate:
 - Git tags for each release
 
 The changelog includes all changeset descriptions, providing clear documentation of what changed in each release.
+
+-->
 
 ## Troubleshooting
 

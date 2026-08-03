@@ -14,19 +14,12 @@
     "lint": "pnpm --filter @cloudflare/kumo lint && vp lint packages/*/src",
     "lockfile-check": "pnpm install --no-frozen-lockfile && git diff --exit-code pnpm-lock.yaml",
     "preview": "pnpm --filter @cloudflare/kumo-docs-astro preview",
-    "publish:beta": "bash ci/versioning/publish-beta.sh",
-    "deploy:kumo-docs-preview": "bash ci/versioning/deploy-kumo-docs-preview.sh",
-    "deploy:kumo-docs-staging": "bash ci/versioning/deploy-kumo-docs-staging.sh",
-    "ci:post-pr-report": "tsx ci/scripts/post-pr-report.ts",
-    "release": "pnpm build:all && changeset publish",
-    "release:beta": "changeset publish --no-git-tag --tag beta",
-    "release:production": "bash ci/versioning/release-production.sh",
+    "release": "bash ci/versioning/publish-github-packages.sh",
     "kumo": "node packages/kumo/dist/command-line/cli.js",
     "test": "pnpm --filter @cloudflare/kumo test",
     "test:watch": "pnpm --filter @cloudflare/kumo test:watch",
     "typecheck": "pnpm -r typecheck",
-    "version": "changeset version",
-    "version:beta": "./ci/versioning/version-beta.sh"
+    "version": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",

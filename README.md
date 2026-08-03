@@ -1,6 +1,6 @@
 # Kumo
 
-Cloudflare's component library for building modern web applications.
+A fork of Cloudflare's component library for building modern web applications.
 
 Kumo provides accessible, design-system-compliant UI components built on [Base UI](https://base-ui.com/). It handles keyboard navigation, focus management, and ARIA attributes so you can build accessible applications without thinking through every detail.
 
@@ -9,7 +9,8 @@ Kumo provides accessible, design-system-compliant UI components built on [Base U
 ## Installation
 
 ```bash
-pnpm add @cloudflare/kumo
+echo "@conservationtv:registry=https://npm.pkg.github.com" >> .npmrc
+pnpm add @conservationtv/kumo
 ```
 
 ### Peer Dependencies
@@ -21,14 +22,14 @@ pnpm add react react-dom @phosphor-icons/react
 ## Usage
 
 ```tsx
-import { Button, Input, Dialog } from "@cloudflare/kumo";
-import "@cloudflare/kumo/styles";
+import { Button, Input, Dialog } from "@conservationtv/kumo";
+import "@conservationtv/kumo/styles";
 ```
 
 ### Granular Imports (Tree-Shaking)
 
 ```tsx
-import { Button } from "@cloudflare/kumo/components/button";
+import { Button } from "@conservationtv/kumo/components/button";
 ```
 
 ### Base UI Primitives
@@ -36,7 +37,7 @@ import { Button } from "@cloudflare/kumo/components/button";
 Kumo re-exports all Base UI primitives for advanced use cases:
 
 ```tsx
-import { Popover } from "@cloudflare/kumo/primitives/popover";
+import { Popover } from "@conservationtv/kumo/primitives/popover";
 ```
 
 ## CLI
@@ -44,9 +45,9 @@ import { Popover } from "@cloudflare/kumo/primitives/popover";
 Query component documentation from the command line:
 
 ```bash
-npx @cloudflare/kumo ls          # List all components
-npx @cloudflare/kumo doc Button  # Get component docs
-npx @cloudflare/kumo docs        # Get all docs
+npx @conservationtv/kumo ls          # List all components
+npx @conservationtv/kumo doc Button  # Get component docs
+npx @conservationtv/kumo docs        # Get all docs
 ```
 
 ## Development
@@ -87,7 +88,8 @@ pnpm --filter @cloudflare/kumo new-component
 
 ## Documentation
 
-- **Live Docs**: [kumo-ui.com](https://kumo-ui.com)
+- **Live Docs**: [ui.docs.conservation.tv](https://ui.docs.conservation.tv)
+- **Fork deployment**: See [`.github/FORK_SETUP.md`](./.github/FORK_SETUP.md)
 - **AI/Agent Guide**: [AGENTS.md](./AGENTS.md)
 
 ## License

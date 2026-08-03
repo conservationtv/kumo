@@ -240,13 +240,9 @@ Making sure your branch follows our recommendations for git will help ensure you
 - Once your PR has been reviewed, when addressing feedback try not to modify already reviewed commits with force pushes. This slows down the review process and makes it hard to keep track of what changes have been made. Instead, add additional commits to your PR to address any feedback (`git commit --fixup` is a helpful tool here).
 - When merging your PR into `main`, `kumo` enforces squash merges. As such, please try and make sure that the commit message associated with the merge clearly describes the entire change your PR makes.
 
-## PR Review
-
-PR review is a critical and required step in the process for landing changes. This is an opportunity to catch potential issues, improve the quality of the work, celebrate good design, and learn from each other. As a reviewer, it's important to be thoughtful about the proposed changes and communicate any feedback.
-
 ## PR Previews
 
-Every PR will have an associated pre-release build for all releasable packages within the repository, powered by [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new). You can find links to prereleases for each package in a comment automatically posted by GitHub Actions on each opened PR ([for example](https://github.com/cloudflare/kumo/pull/87#issuecomment-3908471698)).
+Docs changes are built on every pull request. Pull requests from branches in this repository also receive a Cloudflare Workers preview URL when the deployment secrets are configured.
 
 ## PR Tests
 
@@ -278,8 +274,6 @@ When contributing to Kumo, please refer to the [`STYLEGUIDE.md file`](STYLEGUIDE
 
 ## Releases
 
-We generally cut Kumo releases on every weekday. If you need a release cut outside of the regular cadence, please reach out to the [kumo-maintainers](https://github.com/orgs/cloudflare/teams/kumo-maintainers) team.
-
 ### How Releases Work
 
 Releases are automated through the [Changesets](https://github.com/changesets/changesets) bot:
@@ -287,6 +281,6 @@ Releases are automated through the [Changesets](https://github.com/changesets/ch
 1. When changesets are merged into `main`, the bot automatically opens (or updates) a PR titled **"Version Packages"**.
 2. This PR aggregates all pending changesets, updates package versions, and generates changelog entries.
 3. To trigger a release, a maintainer reviews and merges the "Version Packages" PR.
-4. Once merged, the CI pipeline automatically publishes the updated packages to npm.
+4. Once merged, the CI pipeline publishes `@conservationtv/kumo` to GitHub Packages.
 
 If you don't see a "Version Packages" PR, it means there are no unreleased changesets on `main`.

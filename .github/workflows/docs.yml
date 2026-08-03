@@ -1,0 +1,146 @@
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/docs.yml"
+      - "packages/kumo/**"
+      - "packages/kumo-docs-astro/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "vite.config.ts"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/docs.yml"
+      - "packages/kumo/**"
+      - "packages/kumo-docs-astro/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "vite.config.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: docs-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DOCS_DOMAIN: ${{ vars.DOCS_DOMAIN || 'ui.docs.conservation.tv' }}
+      SITE_URL: ${{ format('https://{0}', vars.DOCS_DOMAIN || 'ui.docs.conservation.tv') }}
+      WORKER_NAME: ${{ vars.CLOUDFLARE_WORKER_NAME || 'kumo-docs' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build docs
+        run: vp run build:docs
+
+      - name: Test docs
+        run: pnpm --filter @cloudflare/kumo-docs-astro test
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ github.sha }}
+          path: packages/kumo-docs-astro/dist
+          retention-days: 7
+
+      - name: Check deployment configuration
+        id: deployment
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare deployment skipped: configure CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Deploy preview
+        id: preview
+        if: steps.deployment.outputs.enabled == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        working-directory: packages/kumo-docs-astro
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          output=$(pnpm exec wrangler versions upload \
+            --name "$WORKER_NAME" \
+            --message "PR #${{ github.event.pull_request.number }} (${GITHUB_SHA:0:7})" 2>&1)
+          echo "$output"
+
+          preview_url=$(echo "$output" | grep -oE 'https://[^ ]+workers\.dev' | tail -1)
+          if [ -z "$preview_url" ]; then
+            echo "::error::Wrangler did not return a preview URL"
+            exit 1
+          fi
+
+          echo "url=$preview_url" >> "$GITHUB_OUTPUT"
+          echo "Docs preview: $preview_url" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment preview URL
+        if: steps.preview.outputs.url != ''
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+        with:
+          script: |
+            const marker = '<!-- docs-preview -->';
+            const body = `${marker}\n### Docs preview\n\n[Open preview](${process.env.PREVIEW_URL})\n\nCommit: \`${context.sha.slice(0, 7)}\``;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((comment) => comment.body?.startsWith(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Deploy production
+        if: steps.deployment.outputs.enabled == 'true' && github.event_name != 'pull_request'
+        working-directory: packages/kumo-docs-astro
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          args=(deploy --name "$WORKER_NAME")
+          if [ -n "$DOCS_DOMAIN" ]; then
+            args+=(--route "${DOCS_DOMAIN}/*")
+          fi
+
+          pnpm exec wrangler "${args[@]}"
+
+          if [ -n "$DOCS_DOMAIN" ]; then
+            echo "Docs deployed to https://${DOCS_DOMAIN}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Docs deployed to the ${WORKER_NAME} workers.dev domain" >> "$GITHUB_STEP_SUMMARY"
+          fi

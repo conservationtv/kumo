@@ -3,7 +3,7 @@ import componentRegistry from "@cloudflare/kumo/ai/component-registry.json";
 
 export const prerender = true;
 
-const SITE_URL = "https://kumo-ui.com";
+const SITE_URL = import.meta.env.SITE.replace(/\/$/, "");
 
 const componentDocPages = import.meta.glob("./components/*.{astro,mdx}");
 const blockDocPages = import.meta.glob("./blocks/*.{astro,mdx}");

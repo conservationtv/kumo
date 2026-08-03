@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
 
 const distDir = join(import.meta.dirname, "../../dist");
+const siteUrl = process.env.SITE_URL || "https://ui.docs.conservation.tv";
 
 describe("markdown pages integration", () => {
   it("generates .md files for component pages", () => {
@@ -57,8 +58,8 @@ describe("markdown pages integration", () => {
     const content = readFileSync(llmsPath, "utf-8");
     expect(content).toContain("# Kumo");
     expect(content).toContain("This file is a curated index for LLMs");
-    expect(content).toContain("https://kumo-ui.com/installation.md");
-    expect(content).toContain("https://kumo-ui.com/components/button.md");
-    expect(content).toContain("https://kumo-ui.com/blocks/resource-list.md");
+    expect(content).toContain(`${siteUrl}/installation.md`);
+    expect(content).toContain(`${siteUrl}/components/button.md`);
+    expect(content).toContain(`${siteUrl}/blocks/resource-list.md`);
   });
 });
