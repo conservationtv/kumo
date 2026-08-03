@@ -38,16 +38,18 @@ jobs:
         run: vp run gen:figma-data
 
       - name: Check formatting
-        run: pnpm format:check
+        run: vp run format:check
 
       - name: Lint
-        run: pnpm lint
+        run: |
+          vp run --filter @cloudflare/kumo lint:oxlint
+          vp lint packages/*/src
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: vp run typecheck
 
       - name: Test package
-        run: pnpm test
+        run: vp run --filter @cloudflare/kumo test
 
       - name: Test docs
-        run: pnpm --filter @cloudflare/kumo-docs-astro test
+        run: vp run --filter @cloudflare/kumo-docs-astro test

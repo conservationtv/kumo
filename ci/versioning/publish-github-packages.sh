@@ -11,7 +11,7 @@ ORIGINAL_MANIFEST=$(mktemp)
 cp "$PACKAGE_MANIFEST" "$ORIGINAL_MANIFEST"
 trap 'cp "$ORIGINAL_MANIFEST" "$PACKAGE_MANIFEST"; rm -f "$ORIGINAL_MANIFEST"' EXIT
 
-pnpm --filter @cloudflare/kumo build
+vp run build:kumo
 
 PACKAGE_NAME="$PACKAGE_NAME" node --input-type=module <<'NODE'
 import { readFile, writeFile } from "node:fs/promises";
@@ -30,4 +30,4 @@ await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 NODE
 
 echo "Publishing ${PACKAGE_NAME} to GitHub Packages"
-pnpm exec changeset publish
+vp exec changeset publish
