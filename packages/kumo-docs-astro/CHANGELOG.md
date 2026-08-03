@@ -1,5 +1,14 @@
 # @cloudflare/kumo-docs-astro
 
+## 1.5.14
+
+### Patch Changes
+
+- 6bdbeeb: Use a light favicon in dark-themed browsers.
+- Updated dependencies [ff76f30]
+- Updated dependencies [01fda5a]
+  - @cloudflare/kumo@2.9.1
+
 ## 1.5.13
 
 ### Patch Changes
