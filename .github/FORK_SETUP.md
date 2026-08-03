@@ -6,8 +6,6 @@ The fork uses three primary workflows:
 - `Release Package` manages Changesets release PRs and publishes the library to GitHub Packages.
 - `Docs` builds every docs change, publishes preview versions for same-repository pull requests, and deploys `main` to Cloudflare Workers.
 
-The Semgrep workflow remains independent and can be removed if it is not useful for this fork.
-
 ## GitHub Packages
 
 The release workflow uses the repository `GITHUB_TOKEN`; an npm token is not required. It stages the package under the repository owner scope, so this repository publishes `@conservationtv/kumo` while the source workspace keeps its upstream-compatible `@cloudflare/kumo` name.
